@@ -1,0 +1,48 @@
+clear;
+
+%Allgemeine Parameter festlegen 
+m1 = 10000;
+m2 = 18000;
+m3 = 7800;
+g = 9.81;
+dz = 0.1;
+d1 = 0.05;
+d2 = 0.03;
+k1 = m1*g/dz;
+k2 = m2*g/dz;
+k3 = m3*g/dz;
+w = 50;
+t = linspace(0,1,1000);
+F_dach = 3;
+
+%Matrizen erstellen und befüllen
+M = zeros(3); D = zeros(3); K = zeros(3);X = zeros(3,length(t));
+M(1,1) = m1; M(2,2) = m2; M(3,3) = m3;
+D(1,1) = d1; D(2,2) = d2; D(2,3) = -d2; D(3,2) = -d2; D(3,3) = d2;
+K(1,1) = k1+k2; K(1,2) = -k2; K(2,1) = -k2; K(2,2) = k2;
+X(1,:) = F_dach .* sin(w*t);
+
+%Eigenvektoren Ev und Eigenwerte Ew berechnen. Eigentlich handelt es sich
+%um eine quadratisches Eigenwertproblem, welches aber in der Vorlesung
+%nicht behandelt wurde. Somit werden hier nur die Ev und Ew der Matrix
+%A=inv(M)*K untersucht.
+
+A = inv(M) * K;
+[Ev, Ew] = eig(A);
+% Berechnung der Eigenfrequenzen
+w0 = sqrt(diag(Ew));
+f0 = w0./(2*pi);
+% Plotting the eigenfrequencies
+figure;
+bar(f0);
+xlabel('Mode Number');
+ylabel('Frequency (Hz)');
+title('Eigenfrequencies of the System');
+grid on;
+
+
+
+
+
+
+
